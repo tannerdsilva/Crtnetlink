@@ -37,7 +37,7 @@ size_t add_address_assignment_request_v4(char *buffer, const size_t current_len,
 size_t add_address_assignment_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, uint8_t prefix_len);
 size_t add_address_removal_request_v4(char *buffer, const size_t current_len, const size_t max_len, int ifindex, uint32_t ip_address, uint8_t prefix_len);
 size_t add_address_removal_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, uint8_t prefix_len);
-int do_address_mod_message(int sock, char *buffer, int len);
+int do_address_mod_message(int sock, char *buffer, const size_t len);
 int get_address_mod_responses(int sock, void(^hndlr)(const struct nlmsghdr *));
 
 #define NLMSG_HDRLEN  ((int) NLMSG_ALIGN(sizeof(struct nlmsghdr)))

@@ -315,7 +315,7 @@ size_t add_address_removal_request_v6(char *buffer, const size_t current_len, co
 	return current_len + req.nlh.nlmsg_len;
 }
 
-int do_address_mod_message(int sock, char *buffer, int len) {
+int do_address_mod_message(int sock, char *buffer, const size_t len) {
 	struct sockaddr_nl nladdr = {
 		.nl_family = AF_NETLINK
 	};
