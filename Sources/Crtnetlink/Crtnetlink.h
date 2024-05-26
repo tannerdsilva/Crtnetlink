@@ -30,10 +30,10 @@ void get_attribute_data_ifla(unsigned char family, struct rtattr *attrs[IFLA_MAX
 
 // address related functions
 // - assembling message (address assignment/removal)
-size_t add_address_assignment_request_v4(char *buffer, int current_len, int max_len, int ifindex, uint32_t ip_address, int prefix_len);
-size_t add_address_assignment_request_v6(char *buffer, int current_len, int max_len, int ifindex, struct in6_addr ip_address, int prefix_len);
-size_t add_address_removal_request_v4(char *buffer, int current_len, int max_len, int ifindex, uint32_t ip_address, int prefix_len);
-size_t add_address_removal_request_v6(char *buffer, int current_len, int max_len, int ifindex, struct in6_addr ip_address, int prefix_len);
+size_t add_address_assignment_request_v4(char *buffer, const size_t current_len, const size_t max_len, int ifindex, uint32_t ip_address, int prefix_len);
+size_t add_address_assignment_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, int prefix_len);
+size_t add_address_removal_request_v4(char *buffer, const size_t current_len, const size_t max_len, int ifindex, uint32_t ip_address, int prefix_len);
+size_t add_address_removal_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, int prefix_len);
 int do_address_mod_message(int sock, char *buffer, int len);
 int get_address_mod_responses(int sock, void(^hndlr)(const struct nlmsghdr *));
 
