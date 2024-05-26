@@ -44,8 +44,8 @@ int get_address_mod_responses(int sock, void(^hndlr)(const struct nlmsghdr *));
 #define NLMSG_LENGTH(len) ((len) + NLMSG_HDRLEN)
 #define NLMSG_SPACE(len) NLMSG_ALIGN(NLMSG_LENGTH(len))
 #define RTA_LENGTH(len) (RTA_ALIGN(sizeof(struct rtattr)) + (len))
-const size_t address_message_size_v4 = NLMSG_SPACE(sizeof(struct ifaddrmsg) + RTA_LENGTH(sizeof(uint32_t)));
-const size_t address_message_size_v6 = NLMSG_SPACE(sizeof(struct ifaddrmsg)) + RTA_LENGTH(sizeof(struct in6_addr));
+size_t address_message_size_v4();
+size_t address_message_size_v6();
 
 // - assembling message (address dump)
 //		- sending (dump)

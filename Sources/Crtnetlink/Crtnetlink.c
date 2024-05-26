@@ -371,6 +371,14 @@ int get_address_mod_responses(int sock, void(^hndlr)(const struct nlmsghdr *)) {
 	return 0; // Return success
 }
 
+size_t address_message_size_v4() {
+	return NLMSG_SPACE(sizeof(struct ifaddrmsg) + RTA_LENGTH(sizeof(uint32_t)));
+}
+
+size_t address_message_size_v6() {
+	return NLMSG_SPACE(sizeof(struct ifaddrmsg)) + RTA_LENGTH(sizeof(struct in6_addr));
+}
+
 int get_address_dump_response(int sock, void(^hndlr)(const struct nlmsghdr *)) {
 	struct sockaddr_nl nladdr;
 	struct iovec iov;
