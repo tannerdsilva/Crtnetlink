@@ -445,7 +445,7 @@ int check_address_operation_response(int sock) {
 }
 
 
-int read_address(struct nlmsghdr *nl_header_answer, void(^hndlr)(struct ifaddrmsg *ifa, struct rtattr *attrs[RTA_MAX+1])) {
+int read_address(const struct nlmsghdr *nl_header_answer, void(^hndlr)(struct ifaddrmsg *ifa, struct rtattr *attrs[RTA_MAX+1])) {
 	struct ifaddrmsg *ifa = NLMSG_DATA(nl_header_answer);
 	int len = nl_header_answer->nlmsg_len;
 	struct rtattr *tb[IFA_MAX+1];
@@ -572,7 +572,7 @@ int get_route_dump_response(int sock, void(^hndlr)(struct nlmsghdr*))
 	return status;
 }
 
-int read_route(struct nlmsghdr *nl_header_answer, void(^hndlr)(struct rtmsg *r, struct rtattr *tb[RTA_MAX+1])) {
+int read_route(const struct nlmsghdr *nl_header_answer, void(^hndlr)(struct rtmsg *r, struct rtattr *tb[RTA_MAX+1])) {
 	struct rtmsg* r = NLMSG_DATA(nl_header_answer);
 	int len = nl_header_answer->nlmsg_len;
 	struct rtattr* tb[RTA_MAX+1];

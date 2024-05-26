@@ -54,7 +54,7 @@ int get_address_dump_response(int sock, void(^hndlr)(const struct nlmsghdr *));
 //		- receiving (assignment/removal)
 int check_address_operation_response(int sock);
 //		- interpreting
-int read_address(struct nlmsghdr *, void(^hndlr)(struct ifaddrmsg *ifa, struct rtattr *attrs[RTA_MAX+1]));
+int read_address(const struct nlmsghdr *, void(^hndlr)(struct ifaddrmsg *ifa, struct rtattr *attrs[RTA_MAX+1]));
 //		- attributes
 void get_attribute_data_ifa(unsigned char family, struct rtattr *attrs[IFA_MAX+1], int attrKey, char **buf);
 
@@ -66,7 +66,7 @@ int do_route_dump_request_v6(int sock);
 // - receiving
 int get_route_dump_response(int sock, void(^hndlr)(struct nlmsghdr *));
 // - interpreting
-int read_route(struct nlmsghdr *, void(^hndlr)(struct rtmsg *r, struct rtattr *tb[RTA_MAX+1]));
+int read_route(const struct nlmsghdr *, void(^hndlr)(struct rtmsg *r, struct rtattr *tb[RTA_MAX+1]));
 // - attributes
 void get_attribute_data_rt(unsigned char family, struct rtattr *attrs[RTA_MAX+1], enum rtattr_type_t attrKey, char **buf);
 int get_attribute_uint32_rt(struct rtattr *attrs[RTA_MAX+1], enum rtattr_type_t attrKey, uint32_t *num);
