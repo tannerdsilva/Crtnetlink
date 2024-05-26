@@ -181,7 +181,7 @@ int do_address_dump_request_v6(int sock) {
 
 }
 
-size_t add_address_assignment_request_v4(char *buffer, const size_t current_len, const size_t max_len, int ifindex, uint32_t ip_address, int prefix_len) {
+size_t add_address_assignment_request_v4(char *buffer, const size_t current_len, const size_t max_len, int ifindex, uint32_t ip_address, uint8_t prefix_len) {
 	struct {
 		struct nlmsghdr nlh;
 		struct ifaddrmsg ifa;
@@ -224,7 +224,7 @@ size_t add_address_assignment_request_v4(char *buffer, const size_t current_len,
 	return current_len + req.nlh.nlmsg_len;
 }
 
-size_t add_address_assignment_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, int prefix_len) {
+size_t add_address_assignment_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, uint8_t prefix_len) {
 	struct {
 		struct nlmsghdr nlh;
 		struct ifaddrmsg ifa;
@@ -260,7 +260,7 @@ size_t add_address_assignment_request_v6(char *buffer, const size_t current_len,
 }
 
 // Add IPv4 address removal request to buffer
-size_t add_address_removal_request_v4(char *buffer, const size_t current_len, const size_t max_len, int ifindex, uint32_t ip_address, int prefix_len) {
+size_t add_address_removal_request_v4(char *buffer, const size_t current_len, const size_t max_len, int ifindex, uint32_t ip_address, uint8_t prefix_len) {
 	struct {
 		struct nlmsghdr nlh;
 		struct ifaddrmsg ifa;
@@ -288,7 +288,7 @@ size_t add_address_removal_request_v4(char *buffer, const size_t current_len, co
 }
 
 // Add IPv6 address removal request to buffer
-size_t add_address_removal_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, int prefix_len) {
+size_t add_address_removal_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, uint8_t prefix_len) {
 	struct {
 		struct nlmsghdr nlh;
 		struct ifaddrmsg ifa;
