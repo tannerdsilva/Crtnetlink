@@ -39,6 +39,7 @@ size_t add_address_removal_request_v4(char *buffer, const size_t current_len, co
 size_t add_address_removal_request_v6(char *buffer, const size_t current_len, const size_t max_len, int ifindex, struct in6_addr ip_address, const uint8_t prefix_len, uint32_t *seqnum);
 int do_address_mod_message(int sock, char *buffer, const size_t len);
 int get_address_mod_responses(int sock, void(^hndlr)(const struct nlmsghdr *));
+int read_address_mod(const struct nlmsghdr *nh, void(^hndlr)(const struct ifaddrmsg *ifa, struct rtattr *attrs[RTA_MAX+1]));
 
 #define NLMSG_HDRLEN  ((int) NLMSG_ALIGN(sizeof(struct nlmsghdr)))
 #define NLMSG_LENGTH(len) ((len) + NLMSG_HDRLEN)

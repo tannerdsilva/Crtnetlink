@@ -371,6 +371,32 @@ int get_address_mod_responses(int sock, void(^hndlr)(const struct nlmsghdr *)) {
 	return 0; // Return success
 }
 
+int read_address_mod(const struct nlmsghdr *nh, void(^hndlr)(const struct ifaddrmsg *ifa, struct rtattr *attrs[RTA_MAX+1])) {
+    // Ensure the message is for address handling
+    if (nh->nlmsg_type != RTM_NEWADDR && nh->nlmsg_type != RTM_DELADDR) {
+        fprintf(stderr, "Unsupported message type: %d\n", nh->nlmsg_type);
+        return -1;
+    }
+
+    const struct ifaddrmsg *ifa = (const struct ifaddrmsg *)NLMSG_DATA(nh);
+    int payload_len = NLMSG_PAYLOAD(nh, sizeof(struct ifaddrmsg));
+
+    struct rtattr *tb[RTA_MAX + 1];
+    memset(tb, 0, sizeof(struct rtattr *) * (RTA_MAX + 1));
+
+    // Parse attributes
+    struct rtattr *rta;
+    for (rta = IFA_RTA(ifa); RTA_OK(rta, payload_len); rta = RTA_NEXT(rta, payload_len)) {
+        if (rta->rta_type <= RTA_MAX) {
+            tb[rta->rta_type] = rta;
+        }
+    }
+
+    // Call the handler function
+    hndlr(ifa, tb);
+    return 0;
+}
+
 size_t address_message_size_v4() {
 	return NLMSG_SPACE(sizeof(struct ifaddrmsg) + RTA_LENGTH(sizeof(uint32_t)));
 }
