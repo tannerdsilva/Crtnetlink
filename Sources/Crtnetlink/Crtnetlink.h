@@ -1,3 +1,6 @@
+#ifndef CRTNETLINK_H
+#define CRTNETLINK_H
+
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -70,3 +73,5 @@ int read_route(const struct nlmsghdr *, void(^hndlr)(struct rtmsg *r, struct rta
 // - attributes
 void get_attribute_data_rt(unsigned char family, struct rtattr *attrs[RTA_MAX+1], enum rtattr_type_t attrKey, char **buf);
 int get_attribute_uint32_rt(struct rtattr *attrs[RTA_MAX+1], enum rtattr_type_t attrKey, uint32_t *num);
+
+#endif // CRTNETLINK_H
