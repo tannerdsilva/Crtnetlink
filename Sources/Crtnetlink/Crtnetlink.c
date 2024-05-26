@@ -159,7 +159,7 @@ int do_address_dump_request_v4(int sock) {
 	request.nlh.nlmsg_type = RTM_GETADDR;
 	request.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_DUMP;
 	request.nlh.nlmsg_len = sizeof(request);
-	request.nlh.nlmsg_seq = time(NULL);
+	request.nlh.nlmsg_seq = 0;
 	request.rtm.rtm_family = AF_INET;
 	// send
 	return send(sock, &request, sizeof(request), 0);
@@ -174,7 +174,7 @@ int do_address_dump_request_v6(int sock) {
 	request.nlh.nlmsg_type = RTM_GETADDR;
 	request.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_DUMP;
 	request.nlh.nlmsg_len = sizeof(request);
-	request.nlh.nlmsg_seq = time(NULL);
+	request.nlh.nlmsg_seq = 0;
 	request.rtm.rtm_family = AF_INET6;
 	// send
 	return send(sock, &request, sizeof(request), 0);
