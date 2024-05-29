@@ -194,7 +194,7 @@ size_t add_address_assignment_request_v4(char *buffer, const size_t current_len,
 	// Fill the Netlink header
 	req.nlh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
 	req.nlh.nlmsg_type = RTM_NEWADDR;
-	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL;
+	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE;
 	req.nlh.nlmsg_seq = (*seqnum)++;
 	req.nlh.nlmsg_pid = getpid();
 
@@ -235,7 +235,7 @@ size_t add_address_assignment_request_v6(char *buffer, const size_t current_len,
 
 	req.nlh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
 	req.nlh.nlmsg_type = RTM_NEWADDR;
-	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL;
+	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE;
 	req.nlh.nlmsg_seq = (*seqnum)++;
 	req.nlh.nlmsg_pid = getpid();
 
@@ -262,29 +262,35 @@ size_t add_address_assignment_request_v6(char *buffer, const size_t current_len,
 // Add IPv4 address removal request to buffer
 size_t add_address_removal_request_v4(char *buffer, const size_t current_len, const size_t max_len, int ifindex, uint32_t ip_address, const uint8_t prefix_len, uint32_t *seqnum) {
 	struct {
-		struct nlmsghdr nlh;
-		struct ifaddrmsg ifa;
-	} req;
+        struct nlmsghdr nlh;
+        struct ifaddrmsg ifa;
+        char attrbuf[256]; // Buffer to hold the attribute
+    } req;
 
-	memset(&req, 0, sizeof(req));
+    memset(&req, 0, sizeof(req));
 
-	req.nlh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
-	req.nlh.nlmsg_type = RTM_DELADDR;
-	req.nlh.nlmsg_flags = NLM_F_REQUEST;
-	req.nlh.nlmsg_seq = (*seqnum)++;
-	req.nlh.nlmsg_pid = getpid();
+    req.nlh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
+    req.nlh.nlmsg_type = RTM_DELADDR;
+    req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
+    req.nlh.nlmsg_seq = (*seqnum)++;
+    req.nlh.nlmsg_pid = getpid();
 
-	req.ifa.ifa_family = AF_INET;
-	req.ifa.ifa_prefixlen = prefix_len;
-	req.ifa.ifa_index = ifindex;
-	req.ifa.ifa_scope = RT_SCOPE_UNIVERSE;
+    req.ifa.ifa_family = AF_INET;
+    req.ifa.ifa_prefixlen = prefix_len;
+    req.ifa.ifa_index = ifindex;
+    req.ifa.ifa_scope = RT_SCOPE_UNIVERSE;
 
-	if (current_len + req.nlh.nlmsg_len > max_len) {
-		return -1;
-	}
+    struct rtattr *rta = (struct rtattr *)(req.attrbuf);
+    rta->rta_type = IFA_LOCAL;
+    rta->rta_len = RTA_LENGTH(4);
+    memcpy(RTA_DATA(rta), &ip_address, sizeof(ip_address));
 
-	memcpy(buffer + current_len, &req, req.nlh.nlmsg_len);
-	return current_len + req.nlh.nlmsg_len;
+    req.nlh.nlmsg_len = NLMSG_ALIGN(req.nlh.nlmsg_len) + RTA_LENGTH(4);
+    if (current_len + req.nlh.nlmsg_len > max_len) {
+        return -1;
+    }
+    memcpy(buffer + current_len, &req, req.nlh.nlmsg_len);
+    return current_len + req.nlh.nlmsg_len;
 }
 
 // Add IPv6 address removal request to buffer
@@ -292,13 +298,14 @@ size_t add_address_removal_request_v6(char *buffer, const size_t current_len, co
 	struct {
 		struct nlmsghdr nlh;
 		struct ifaddrmsg ifa;
+		char attrbuf[512];
 	} req;
 
 	memset(&req, 0, sizeof(req));
 
 	req.nlh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
 	req.nlh.nlmsg_type = RTM_DELADDR;
-	req.nlh.nlmsg_flags = NLM_F_REQUEST;
+	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK;
 	req.nlh.nlmsg_seq = (*seqnum)++;
 	req.nlh.nlmsg_pid = getpid();
 
@@ -306,6 +313,12 @@ size_t add_address_removal_request_v6(char *buffer, const size_t current_len, co
 	req.ifa.ifa_prefixlen = prefix_len;
 	req.ifa.ifa_index = ifindex;
 	req.ifa.ifa_scope = RT_SCOPE_UNIVERSE;
+
+	struct rtattr *rta = (struct rtattr *)(req.attrbuf);
+	rta->rta_type = IFA_LOCAL;
+	rta->rta_len = RTA_LENGTH(sizeof(struct in6_addr));
+	memcpy(RTA_DATA(rta), &ip_address, sizeof(struct in6_addr));
+	req.nlh.nlmsg_len += rta->rta_len;
 
 	if (current_len + req.nlh.nlmsg_len > max_len) {
 		return -1;
