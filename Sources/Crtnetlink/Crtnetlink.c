@@ -194,7 +194,7 @@ size_t add_address_assignment_request_v4(char *buffer, const size_t current_len,
 	// Fill the Netlink header
 	req.nlh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
 	req.nlh.nlmsg_type = RTM_NEWADDR;
-	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE;
+	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_ACK;
 	req.nlh.nlmsg_seq = (*seqnum)++;
 	req.nlh.nlmsg_pid = getpid();
 
@@ -235,7 +235,7 @@ size_t add_address_assignment_request_v6(char *buffer, const size_t current_len,
 
 	req.nlh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
 	req.nlh.nlmsg_type = RTM_NEWADDR;
-	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE;
+	req.nlh.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_ACK;
 	req.nlh.nlmsg_seq = (*seqnum)++;
 	req.nlh.nlmsg_pid = getpid();
 
